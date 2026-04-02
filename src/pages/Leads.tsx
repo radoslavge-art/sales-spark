@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { StatusBadge } from "@/components/StatusBadge";
@@ -18,22 +18,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Plus, Search, Filter, MoreHorizontal, Eye, Edit, Trash2 } from "lucide-react";
+import { Search, Filter, MoreHorizontal, Eye, Edit, Trash2, X } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { LeadCreateDialog } from "@/components/leads/LeadCreateDialog";
+import { LeadHistoryPanel } from "@/components/leads/LeadHistoryPanel";
 
 type Lead = {
   id: string;
@@ -70,6 +63,7 @@ export default function Leads() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [createOpen, setCreateOpen] = useState(false);
+  const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
 
   const filtered = mockLeads.filter((lead) => {
     const matchesSearch =
@@ -80,6 +74,10 @@ export default function Leads() {
     return matchesSearch && matchesStatus;
   });
 
+  const selectedLead = selectedLeadId
+    ? mockLeads.find((l) => l.id === selectedLeadId)
+    : null;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -87,78 +85,7 @@ export default function Leads() {
           <h1 className="text-2xl font-semibold text-foreground">Leads</h1>
           <p className="text-sm text-muted-foreground">{mockLeads.length} total leads</p>
         </div>
-        <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Add Lead
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-lg">
-            <DialogHeader>
-              <DialogTitle>Create New Lead</DialogTitle>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>First Name</Label>
-                  <Input placeholder="First name" />
-                </div>
-                <div className="space-y-2">
-                  <Label>Last Name</Label>
-                  <Input placeholder="Last name" />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label>Company</Label>
-                <Input placeholder="Company name" />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Email</Label>
-                  <Input type="email" placeholder="email@company.com" />
-                </div>
-                <div className="space-y-2">
-                  <Label>Phone</Label>
-                  <Input placeholder="+1 555-0100" />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Source</Label>
-                  <Select>
-                    <SelectTrigger><SelectValue placeholder="Select source" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="website">Website</SelectItem>
-                      <SelectItem value="referral">Referral</SelectItem>
-                      <SelectItem value="linkedin">LinkedIn</SelectItem>
-                      <SelectItem value="cold-call">Cold Call</SelectItem>
-                      <SelectItem value="event">Event</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label>Priority</Label>
-                  <Select>
-                    <SelectTrigger><SelectValue placeholder="Select priority" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="high">High</SelectItem>
-                      <SelectItem value="medium">Medium</SelectItem>
-                      <SelectItem value="low">Low</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label>Notes</Label>
-                <Textarea placeholder="Add any initial notes..." />
-              </div>
-              <Button className="w-full" onClick={() => setCreateOpen(false)}>
-                Create Lead
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <LeadCreateDialog open={createOpen} onOpenChange={setCreateOpen} />
       </div>
 
       {/* Filters */}
@@ -193,63 +120,93 @@ export default function Leads() {
         </CardContent>
       </Card>
 
-      {/* Leads Table */}
-      <Card>
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Company</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Priority</TableHead>
-                <TableHead>Owner</TableHead>
-                <TableHead>Source</TableHead>
-                <TableHead>Created</TableHead>
-                <TableHead className="w-10" />
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filtered.map((lead) => (
-                <TableRow key={lead.id} className="cursor-pointer hover:bg-secondary/50">
-                  <TableCell>
-                    <div>
-                      <p className="font-medium text-foreground">{lead.firstName} {lead.lastName}</p>
-                      <p className="text-xs text-muted-foreground">{lead.email}</p>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">{lead.company}</TableCell>
-                  <TableCell>
-                    <StatusBadge status={lead.status} />
-                  </TableCell>
-                  <TableCell>
-                    <span className={`status-badge ${priorityClasses[lead.priority]}`}>
-                      {lead.priority}
-                    </span>
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">{lead.assignedTo}</TableCell>
-                  <TableCell className="text-muted-foreground">{lead.source}</TableCell>
-                  <TableCell className="text-muted-foreground text-sm">{lead.createdAt}</TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem><Eye className="mr-2 h-4 w-4" /> View</DropdownMenuItem>
-                        <DropdownMenuItem><Edit className="mr-2 h-4 w-4" /> Edit</DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive"><Trash2 className="mr-2 h-4 w-4" /> Delete</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
+      {/* Main content: table + history panel */}
+      <div className="flex gap-6">
+        {/* Leads Table */}
+        <Card className={selectedLead ? "flex-1 min-w-0" : "w-full"}>
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Company</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Priority</TableHead>
+                  <TableHead>Owner</TableHead>
+                  <TableHead>Source</TableHead>
+                  <TableHead>Created</TableHead>
+                  <TableHead className="w-10" />
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              </TableHeader>
+              <TableBody>
+                {filtered.map((lead) => (
+                  <TableRow
+                    key={lead.id}
+                    className={`cursor-pointer hover:bg-secondary/50 ${selectedLeadId === lead.id ? "bg-secondary/70" : ""}`}
+                    onClick={() => setSelectedLeadId(selectedLeadId === lead.id ? null : lead.id)}
+                  >
+                    <TableCell>
+                      <div>
+                        <p className="font-medium text-foreground">{lead.firstName} {lead.lastName}</p>
+                        <p className="text-xs text-muted-foreground">{lead.email}</p>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">{lead.company}</TableCell>
+                    <TableCell>
+                      <StatusBadge status={lead.status} />
+                    </TableCell>
+                    <TableCell>
+                      <span className={`status-badge ${priorityClasses[lead.priority]}`}>
+                        {lead.priority}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">{lead.assignedTo}</TableCell>
+                    <TableCell className="text-muted-foreground">{lead.source}</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">{lead.createdAt}</TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={(e) => e.stopPropagation()}>
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem><Eye className="mr-2 h-4 w-4" /> View</DropdownMenuItem>
+                          <DropdownMenuItem><Edit className="mr-2 h-4 w-4" /> Edit</DropdownMenuItem>
+                          <DropdownMenuItem className="text-destructive"><Trash2 className="mr-2 h-4 w-4" /> Delete</DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
+        {/* History Panel */}
+        {selectedLead && (
+          <Card className="w-[360px] shrink-0">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-3">
+                <StatusBadge status={selectedLead.status} />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7"
+                  onClick={() => setSelectedLeadId(null)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+              <LeadHistoryPanel
+                leadId={selectedLead.id}
+                leadName={`${selectedLead.firstName} ${selectedLead.lastName}`}
+              />
+            </CardContent>
+          </Card>
+        )}
+      </div>
     </div>
   );
 }
