@@ -1,6 +1,7 @@
 import { Phone, Mail, MessageSquare, Calendar, UserCheck, ArrowRight } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { StatusBadge } from "@/components/StatusBadge";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type HistoryEntry = {
   id: string;
@@ -84,14 +85,15 @@ interface LeadHistoryPanelProps {
 
 export function LeadHistoryPanel({ leadId, leadName }: LeadHistoryPanelProps) {
   const history = (mockHistory[leadId] || []).slice().reverse();
+  const { t } = useLanguage();
 
   return (
     <div className="space-y-3">
       <h3 className="text-sm font-semibold text-foreground">
-        Contact History — {leadName}
+        {t("leads.contactHistory")} — {leadName}
       </h3>
       {history.length === 0 ? (
-        <p className="text-sm text-muted-foreground py-4 text-center">No history recorded yet.</p>
+        <p className="text-sm text-muted-foreground py-4 text-center">{t("leads.noHistory")}</p>
       ) : (
         <ScrollArea className="h-[320px] pr-3">
           <div className="relative pl-6 space-y-4">

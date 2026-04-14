@@ -4,22 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { Plus, Search, Phone, Mail, Calendar, MessageSquare, RotateCcw } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type ActivityItem = {
   id: string;
@@ -57,10 +50,19 @@ const typeColors: Record<string, string> = {
   Note: "text-muted-foreground bg-muted",
 };
 
+const typeTranslationKeys: Record<string, string> = {
+  Call: "activities.call",
+  Email: "activities.email",
+  Meeting: "activities.meeting",
+  "Follow-up": "activities.followUp",
+  Note: "activities.note",
+};
+
 export default function Activities() {
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [createOpen, setCreateOpen] = useState(false);
+  const { t } = useLanguage();
 
   const filtered = mockActivities.filter((a) => {
     const matchesSearch = `${a.description} ${a.leadName}`
@@ -77,35 +79,35 @@ export default function Activities() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-foreground">Activities</h1>
+          <h1 className="text-2xl font-semibold text-foreground">{t("activities.title")}</h1>
           <p className="text-sm text-muted-foreground">
-            {pending.length} pending · {completed.length} completed
+            {pending.length} {t("activities.pending")} · {completed.length} {t("activities.completed")}
           </p>
         </div>
         <Dialog open={createOpen} onOpenChange={setCreateOpen}>
           <DialogTrigger asChild>
-            <Button><Plus className="mr-2 h-4 w-4" /> Log Activity</Button>
+            <Button><Plus className="mr-2 h-4 w-4" /> {t("activities.logActivity")}</Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-lg">
-            <DialogHeader><DialogTitle>Log New Activity</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{t("activities.logNew")}</DialogTitle></DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="space-y-2">
-                <Label>Type</Label>
+                <Label>{t("activities.type")}</Label>
                 <Select>
-                  <SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder={t("activities.type")} /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="call">Call</SelectItem>
-                    <SelectItem value="email">Email</SelectItem>
-                    <SelectItem value="meeting">Meeting</SelectItem>
-                    <SelectItem value="follow-up">Follow-up</SelectItem>
-                    <SelectItem value="note">Note</SelectItem>
+                    <SelectItem value="call">{t("activities.call")}</SelectItem>
+                    <SelectItem value="email">{t("activities.email")}</SelectItem>
+                    <SelectItem value="meeting">{t("activities.meeting")}</SelectItem>
+                    <SelectItem value="follow-up">{t("activities.followUp")}</SelectItem>
+                    <SelectItem value="note">{t("activities.note")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label>Related Lead</Label>
+                <Label>{t("activities.relatedLead")}</Label>
                 <Select>
-                  <SelectTrigger><SelectValue placeholder="Select lead" /></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder={t("ai.selectLead")} /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="1">Sarah Chen</SelectItem>
                     <SelectItem value="2">Mike Ross</SelectItem>
@@ -114,14 +116,14 @@ export default function Activities() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label>Due Date & Time</Label>
+                <Label>{t("activities.dueDate")}</Label>
                 <Input type="datetime-local" />
               </div>
               <div className="space-y-2">
-                <Label>Description</Label>
-                <Textarea placeholder="Describe the activity..." />
+                <Label>{t("activities.description")}</Label>
+                <Textarea placeholder={t("activities.describePlaceholder")} />
               </div>
-              <Button className="w-full" onClick={() => setCreateOpen(false)}>Log Activity</Button>
+              <Button className="w-full" onClick={() => setCreateOpen(false)}>{t("activities.logActivity")}</Button>
             </div>
           </DialogContent>
         </Dialog>
@@ -132,29 +134,28 @@ export default function Activities() {
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Search activities..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
+              <Input placeholder={t("activities.searchPlaceholder")} className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
             </div>
             <Select value={typeFilter} onValueChange={setTypeFilter}>
               <SelectTrigger className="w-full sm:w-40">
-                <SelectValue placeholder="Type" />
+                <SelectValue placeholder={t("activities.type")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="Call">Call</SelectItem>
-                <SelectItem value="Email">Email</SelectItem>
-                <SelectItem value="Meeting">Meeting</SelectItem>
-                <SelectItem value="Follow-up">Follow-up</SelectItem>
-                <SelectItem value="Note">Note</SelectItem>
+                <SelectItem value="all">{t("activities.allTypes")}</SelectItem>
+                <SelectItem value="Call">{t("activities.call")}</SelectItem>
+                <SelectItem value="Email">{t("activities.email")}</SelectItem>
+                <SelectItem value="Meeting">{t("activities.meeting")}</SelectItem>
+                <SelectItem value="Follow-up">{t("activities.followUp")}</SelectItem>
+                <SelectItem value="Note">{t("activities.note")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </CardContent>
       </Card>
 
-      {/* Pending */}
       {pending.length > 0 && (
         <div className="space-y-3">
-          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Pending</h2>
+          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">{t("activities.pendingSection")}</h2>
           {pending.map((activity) => (
             <Card key={activity.id} className="transition-shadow hover:shadow-md">
               <CardContent className="p-4">
@@ -164,7 +165,7 @@ export default function Activities() {
                     <div className="flex items-center gap-2 mb-1">
                       <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${typeColors[activity.type]}`}>
                         {typeIcons[activity.type]}
-                        {activity.type}
+                        {t(typeTranslationKeys[activity.type])}
                       </span>
                       <span className="text-xs text-muted-foreground">· {activity.leadName}</span>
                     </div>
@@ -182,10 +183,9 @@ export default function Activities() {
         </div>
       )}
 
-      {/* Completed */}
       {completed.length > 0 && (
         <div className="space-y-3">
-          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Completed</h2>
+          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">{t("activities.completedSection")}</h2>
           {completed.map((activity) => (
             <Card key={activity.id} className="opacity-60">
               <CardContent className="p-4">
@@ -195,7 +195,7 @@ export default function Activities() {
                     <div className="flex items-center gap-2 mb-1">
                       <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${typeColors[activity.type]}`}>
                         {typeIcons[activity.type]}
-                        {activity.type}
+                        {t(typeTranslationKeys[activity.type])}
                       </span>
                       <span className="text-xs text-muted-foreground">· {activity.leadName}</span>
                     </div>

@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LeadCreateDialog } from "@/components/leads/LeadCreateDialog";
 import { LeadHistoryPanel } from "@/components/leads/LeadHistoryPanel";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type Lead = {
   id: string;
@@ -64,6 +65,7 @@ export default function Leads() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [createOpen, setCreateOpen] = useState(false);
   const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
+  const { t } = useLanguage();
 
   const filtered = mockLeads.filter((lead) => {
     const matchesSearch =
@@ -78,24 +80,29 @@ export default function Leads() {
     ? mockLeads.find((l) => l.id === selectedLeadId)
     : null;
 
+  const priorityKeys: Record<string, string> = {
+    High: "priority.high",
+    Medium: "priority.medium",
+    Low: "priority.low",
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-foreground">Leads</h1>
-          <p className="text-sm text-muted-foreground">{mockLeads.length} total leads</p>
+          <h1 className="text-2xl font-semibold text-foreground">{t("leads.title")}</h1>
+          <p className="text-sm text-muted-foreground">{mockLeads.length} {t("leads.totalLeads")}</p>
         </div>
         <LeadCreateDialog open={createOpen} onOpenChange={setCreateOpen} />
       </div>
 
-      {/* Filters */}
       <Card>
         <CardContent className="p-4">
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search by name, company, email..."
+                placeholder={t("leads.searchPlaceholder")}
                 className="pl-9"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -104,37 +111,35 @@ export default function Leads() {
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-full sm:w-40">
                 <Filter className="mr-2 h-4 w-4" />
-                <SelectValue placeholder="Status" />
+                <SelectValue placeholder={t("leads.status")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="New">New</SelectItem>
-                <SelectItem value="Contacted">Contacted</SelectItem>
-                <SelectItem value="Qualified">Qualified</SelectItem>
-                <SelectItem value="Negotiation">Negotiation</SelectItem>
-                <SelectItem value="Won">Won</SelectItem>
-                <SelectItem value="Lost">Lost</SelectItem>
+                <SelectItem value="all">{t("leads.allStatuses")}</SelectItem>
+                <SelectItem value="New">{t("status.new")}</SelectItem>
+                <SelectItem value="Contacted">{t("status.contacted")}</SelectItem>
+                <SelectItem value="Qualified">{t("status.qualified")}</SelectItem>
+                <SelectItem value="Negotiation">{t("status.negotiation")}</SelectItem>
+                <SelectItem value="Won">{t("status.won")}</SelectItem>
+                <SelectItem value="Lost">{t("status.lost")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </CardContent>
       </Card>
 
-      {/* Main content: table + history panel */}
       <div className="flex gap-6">
-        {/* Leads Table */}
         <Card className={selectedLead ? "flex-1 min-w-0" : "w-full"}>
           <CardContent className="p-0">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Company</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Priority</TableHead>
-                  <TableHead>Owner</TableHead>
-                  <TableHead>Source</TableHead>
-                  <TableHead>Created</TableHead>
+                  <TableHead>{t("leads.name")}</TableHead>
+                  <TableHead>{t("leads.company")}</TableHead>
+                  <TableHead>{t("leads.status")}</TableHead>
+                  <TableHead>{t("leads.priority")}</TableHead>
+                  <TableHead>{t("leads.owner")}</TableHead>
+                  <TableHead>{t("leads.source")}</TableHead>
+                  <TableHead>{t("leads.created")}</TableHead>
                   <TableHead className="w-10" />
                 </TableRow>
               </TableHeader>
@@ -157,7 +162,7 @@ export default function Leads() {
                     </TableCell>
                     <TableCell>
                       <span className={`status-badge ${priorityClasses[lead.priority]}`}>
-                        {lead.priority}
+                        {t(priorityKeys[lead.priority])}
                       </span>
                     </TableCell>
                     <TableCell className="text-muted-foreground">{lead.assignedTo}</TableCell>
@@ -171,9 +176,9 @@ export default function Leads() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem><Eye className="mr-2 h-4 w-4" /> View</DropdownMenuItem>
-                          <DropdownMenuItem><Edit className="mr-2 h-4 w-4" /> Edit</DropdownMenuItem>
-                          <DropdownMenuItem className="text-destructive"><Trash2 className="mr-2 h-4 w-4" /> Delete</DropdownMenuItem>
+                          <DropdownMenuItem><Eye className="mr-2 h-4 w-4" /> {t("leads.view")}</DropdownMenuItem>
+                          <DropdownMenuItem><Edit className="mr-2 h-4 w-4" /> {t("leads.edit")}</DropdownMenuItem>
+                          <DropdownMenuItem className="text-destructive"><Trash2 className="mr-2 h-4 w-4" /> {t("leads.delete")}</DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>
@@ -184,7 +189,6 @@ export default function Leads() {
           </CardContent>
         </Card>
 
-        {/* History Panel */}
         {selectedLead && (
           <Card className="w-[360px] shrink-0">
             <CardContent className="p-4">

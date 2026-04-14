@@ -4,35 +4,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { StatusBadge } from "@/components/StatusBadge";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { Plus, Search, MoreHorizontal, Eye, Edit, Trash2 } from "lucide-react";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type Deal = {
   id: string;
@@ -58,6 +43,7 @@ const formatCurrency = (v: number) =>
 export default function Deals() {
   const [search, setSearch] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
+  const { t } = useLanguage();
 
   const filtered = mockDeals.filter((d) =>
     `${d.title} ${d.leadName}`.toLowerCase().includes(search.toLowerCase())
@@ -73,27 +59,27 @@ export default function Deals() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-foreground">Deals</h1>
-          <p className="text-sm text-muted-foreground">{mockDeals.length} deals · Pipeline: {formatCurrency(totalPipeline)} · Won: {formatCurrency(totalWon)}</p>
+          <h1 className="text-2xl font-semibold text-foreground">{t("deals.title")}</h1>
+          <p className="text-sm text-muted-foreground">{mockDeals.length} {t("deals.title").toLowerCase()} · {t("deals.pipeline")}: {formatCurrency(totalPipeline)} · {t("deals.won")}: {formatCurrency(totalWon)}</p>
         </div>
         <Dialog open={createOpen} onOpenChange={setCreateOpen}>
           <DialogTrigger asChild>
-            <Button><Plus className="mr-2 h-4 w-4" /> New Deal</Button>
+            <Button><Plus className="mr-2 h-4 w-4" /> {t("deals.newDeal")}</Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-lg">
-            <DialogHeader><DialogTitle>Create New Deal</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{t("deals.createNew")}</DialogTitle></DialogHeader>
             <div className="grid gap-4 py-4">
-              <div className="space-y-2"><Label>Title</Label><Input placeholder="Deal title" /></div>
+              <div className="space-y-2"><Label>{t("deals.dealTitle")}</Label><Input placeholder={t("deals.dealTitle")} /></div>
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2"><Label>Value</Label><Input type="number" placeholder="0" /></div>
+                <div className="space-y-2"><Label>{t("deals.value")}</Label><Input type="number" placeholder="0" /></div>
                 <div className="space-y-2">
-                  <Label>Expected Close</Label>
+                  <Label>{t("deals.expectedClose")}</Label>
                   <Input type="date" />
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>Lead</Label>
-                <Select><SelectTrigger><SelectValue placeholder="Select lead" /></SelectTrigger>
+                <Label>{t("deals.lead")}</Label>
+                <Select><SelectTrigger><SelectValue placeholder={t("deals.selectLead")} /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="1">Sarah Chen - TechCorp</SelectItem>
                     <SelectItem value="2">Mike Ross - FinServe</SelectItem>
@@ -101,7 +87,7 @@ export default function Deals() {
                   </SelectContent>
                 </Select>
               </div>
-              <Button className="w-full" onClick={() => setCreateOpen(false)}>Create Deal</Button>
+              <Button className="w-full" onClick={() => setCreateOpen(false)}>{t("deals.createDeal")}</Button>
             </div>
           </DialogContent>
         </Dialog>
@@ -111,7 +97,7 @@ export default function Deals() {
         <CardContent className="p-4">
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Search deals..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
+            <Input placeholder={t("deals.searchPlaceholder")} className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
           </div>
         </CardContent>
       </Card>
@@ -121,12 +107,12 @@ export default function Deals() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Deal</TableHead>
-                <TableHead>Lead</TableHead>
-                <TableHead>Value</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Expected Close</TableHead>
-                <TableHead>Owner</TableHead>
+                <TableHead>{t("deals.deal")}</TableHead>
+                <TableHead>{t("deals.lead")}</TableHead>
+                <TableHead>{t("deals.value")}</TableHead>
+                <TableHead>{t("leads.status")}</TableHead>
+                <TableHead>{t("deals.expectedClose")}</TableHead>
+                <TableHead>{t("leads.owner")}</TableHead>
                 <TableHead className="w-10" />
               </TableRow>
             </TableHeader>
@@ -145,9 +131,9 @@ export default function Deals() {
                         <Button variant="ghost" size="icon" className="h-8 w-8"><MoreHorizontal className="h-4 w-4" /></Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem><Eye className="mr-2 h-4 w-4" /> View</DropdownMenuItem>
-                        <DropdownMenuItem><Edit className="mr-2 h-4 w-4" /> Edit</DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive"><Trash2 className="mr-2 h-4 w-4" /> Delete</DropdownMenuItem>
+                        <DropdownMenuItem><Eye className="mr-2 h-4 w-4" /> {t("leads.view")}</DropdownMenuItem>
+                        <DropdownMenuItem><Edit className="mr-2 h-4 w-4" /> {t("leads.edit")}</DropdownMenuItem>
+                        <DropdownMenuItem className="text-destructive"><Trash2 className="mr-2 h-4 w-4" /> {t("leads.delete")}</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>

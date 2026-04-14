@@ -3,20 +3,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { Plus } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface LeadCreateDialogProps {
   open: boolean;
@@ -24,75 +17,77 @@ interface LeadCreateDialogProps {
 }
 
 export function LeadCreateDialog({ open, onOpenChange }: LeadCreateDialogProps) {
+  const { t } = useLanguage();
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
         <Button>
           <Plus className="mr-2 h-4 w-4" />
-          Add Lead
+          {t("leads.addLead")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Create New Lead</DialogTitle>
+          <DialogTitle>{t("leads.createNew")}</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>First Name</Label>
-              <Input placeholder="First name" />
+              <Label>{t("leads.firstName")}</Label>
+              <Input placeholder={t("leads.firstName")} />
             </div>
             <div className="space-y-2">
-              <Label>Last Name</Label>
-              <Input placeholder="Last name" />
+              <Label>{t("leads.lastName")}</Label>
+              <Input placeholder={t("leads.lastName")} />
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Company</Label>
-            <Input placeholder="Company name" />
+            <Label>{t("leads.company")}</Label>
+            <Input placeholder={t("leads.company")} />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Email</Label>
+              <Label>{t("leads.email")}</Label>
               <Input type="email" placeholder="email@company.com" />
             </div>
             <div className="space-y-2">
-              <Label>Phone</Label>
+              <Label>{t("leads.phone")}</Label>
               <Input placeholder="+1 555-0100" />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Source</Label>
+              <Label>{t("leads.source")}</Label>
               <Select>
-                <SelectTrigger><SelectValue placeholder="Select source" /></SelectTrigger>
+                <SelectTrigger><SelectValue placeholder={t("leads.source")} /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="website">Website</SelectItem>
-                  <SelectItem value="referral">Referral</SelectItem>
-                  <SelectItem value="linkedin">LinkedIn</SelectItem>
-                  <SelectItem value="cold-call">Cold Call</SelectItem>
-                  <SelectItem value="event">Event</SelectItem>
+                  <SelectItem value="website">{t("source.website")}</SelectItem>
+                  <SelectItem value="referral">{t("source.referral")}</SelectItem>
+                  <SelectItem value="linkedin">{t("source.linkedin")}</SelectItem>
+                  <SelectItem value="cold-call">{t("source.coldCall")}</SelectItem>
+                  <SelectItem value="event">{t("source.event")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>Priority</Label>
+              <Label>{t("leads.priority")}</Label>
               <Select>
-                <SelectTrigger><SelectValue placeholder="Select priority" /></SelectTrigger>
+                <SelectTrigger><SelectValue placeholder={t("leads.priority")} /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="high">High</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="low">Low</SelectItem>
+                  <SelectItem value="high">{t("priority.high")}</SelectItem>
+                  <SelectItem value="medium">{t("priority.medium")}</SelectItem>
+                  <SelectItem value="low">{t("priority.low")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Notes</Label>
-            <Textarea placeholder="Add any initial notes..." />
+            <Label>{t("leads.notes")}</Label>
+            <Textarea placeholder={t("leads.notes")} />
           </div>
           <Button className="w-full" onClick={() => onOpenChange(false)}>
-            Create Lead
+            {t("leads.createLead")}
           </Button>
         </div>
       </DialogContent>
