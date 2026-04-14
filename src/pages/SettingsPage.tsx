@@ -4,56 +4,61 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function SettingsPage() {
+  const { t } = useLanguage();
+
+  const members = [
+    { name: "John Doe", email: "john@company.com", roleKey: "role.admin" },
+    { name: "Jane Smith", email: "jane@company.com", roleKey: "role.manager" },
+    { name: "Alex Johnson", email: "alex@company.com", roleKey: "role.salesRep" },
+  ];
+
   return (
     <div className="space-y-6 max-w-2xl">
       <div>
-        <h1 className="text-2xl font-semibold text-foreground">Settings</h1>
-        <p className="text-sm text-muted-foreground">Manage your account and preferences</p>
+        <h1 className="text-2xl font-semibold text-foreground">{t("settings.title")}</h1>
+        <p className="text-sm text-muted-foreground">{t("settings.subtitle")}</p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base font-medium">Profile</CardTitle>
+          <CardTitle className="text-base font-medium">{t("settings.profile")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center gap-4">
             <Avatar className="h-16 w-16">
               <AvatarFallback className="bg-primary text-primary-foreground text-lg">JD</AvatarFallback>
             </Avatar>
-            <Button variant="outline" size="sm">Change Avatar</Button>
+            <Button variant="outline" size="sm">{t("settings.changeAvatar")}</Button>
           </div>
           <Separator />
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label>Full Name</Label>
+              <Label>{t("settings.fullName")}</Label>
               <Input defaultValue="John Doe" />
             </div>
             <div className="space-y-2">
-              <Label>Email</Label>
+              <Label>{t("settings.email")}</Label>
               <Input defaultValue="john@company.com" />
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Role</Label>
-            <Input value="Admin" disabled className="bg-muted" />
+            <Label>{t("settings.role")}</Label>
+            <Input value={t("role.admin")} disabled className="bg-muted" />
           </div>
-          <Button>Save Changes</Button>
+          <Button>{t("settings.saveChanges")}</Button>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base font-medium">Team Members</CardTitle>
+          <CardTitle className="text-base font-medium">{t("settings.teamMembers")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {[
-              { name: "John Doe", email: "john@company.com", role: "Admin" },
-              { name: "Jane Smith", email: "jane@company.com", role: "Manager" },
-              { name: "Alex Johnson", email: "alex@company.com", role: "Sales Rep" },
-            ].map((member) => (
+            {members.map((member) => (
               <div key={member.email} className="flex items-center justify-between rounded-lg border p-3">
                 <div className="flex items-center gap-3">
                   <Avatar className="h-8 w-8">
@@ -66,7 +71,7 @@ export default function SettingsPage() {
                     <p className="text-xs text-muted-foreground">{member.email}</p>
                   </div>
                 </div>
-                <span className="status-badge bg-secondary text-secondary-foreground">{member.role}</span>
+                <span className="status-badge bg-secondary text-secondary-foreground">{t(member.roleKey)}</span>
               </div>
             ))}
           </div>

@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 import {
   Sidebar,
   SidebarContent,
@@ -24,21 +25,22 @@ import {
 } from "@/components/ui/sidebar";
 
 const mainNav = [
-  { title: "Dashboard", url: "/", icon: LayoutDashboard },
-  { title: "Leads", url: "/leads", icon: Users },
-  { title: "Deals", url: "/deals", icon: Handshake },
-  { title: "Activities", url: "/activities", icon: Activity },
+  { titleKey: "nav.dashboard", url: "/", icon: LayoutDashboard },
+  { titleKey: "nav.leads", url: "/leads", icon: Users },
+  { titleKey: "nav.deals", url: "/deals", icon: Handshake },
+  { titleKey: "nav.activities", url: "/activities", icon: Activity },
 ];
 
 const toolsNav = [
-  { title: "AI Assistant", url: "/ai", icon: Sparkles },
-  { title: "Settings", url: "/settings", icon: Settings },
+  { titleKey: "nav.ai", url: "/ai", icon: Sparkles },
+  { titleKey: "nav.settings", url: "/settings", icon: Settings },
 ];
 
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const location = useLocation();
+  const { t } = useLanguage();
 
   const isActive = (path: string) =>
     path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
@@ -52,8 +54,8 @@ export function AppSidebar() {
               <Handshake className="h-4 w-4 text-sidebar-primary-foreground" />
             </div>
             <div>
-              <h2 className="text-sm font-semibold text-sidebar-accent-foreground">SalesCRM</h2>
-              <p className="text-xs text-sidebar-foreground">Sales Platform</p>
+              <h2 className="text-sm font-semibold text-sidebar-accent-foreground">{t("app.name")}</h2>
+              <p className="text-xs text-sidebar-foreground">{t("app.subtitle")}</p>
             </div>
           </div>
         ) : (
@@ -67,15 +69,15 @@ export function AppSidebar() {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-sidebar-foreground/60">Main</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-sidebar-foreground/60">{t("nav.main")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {mainNav.map((item) => (
-                <SidebarMenuItem key={item.title}>
+                <SidebarMenuItem key={item.titleKey}>
                   <SidebarMenuButton
                     asChild
                     isActive={isActive(item.url)}
-                    tooltip={item.title}
+                    tooltip={t(item.titleKey)}
                   >
                     <NavLink
                       to={item.url}
@@ -83,7 +85,7 @@ export function AppSidebar() {
                       activeClassName="bg-sidebar-accent text-sidebar-accent-foreground"
                     >
                       <item.icon className="h-4 w-4" />
-                      {!collapsed && <span>{item.title}</span>}
+                      {!collapsed && <span>{t(item.titleKey)}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -93,22 +95,22 @@ export function AppSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel className="text-sidebar-foreground/60">Tools</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-sidebar-foreground/60">{t("nav.tools")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {toolsNav.map((item) => (
-                <SidebarMenuItem key={item.title}>
+                <SidebarMenuItem key={item.titleKey}>
                   <SidebarMenuButton
                     asChild
                     isActive={isActive(item.url)}
-                    tooltip={item.title}
+                    tooltip={t(item.titleKey)}
                   >
                     <NavLink
                       to={item.url}
                       activeClassName="bg-sidebar-accent text-sidebar-accent-foreground"
                     >
                       <item.icon className="h-4 w-4" />
-                      {!collapsed && <span>{item.title}</span>}
+                      {!collapsed && <span>{t(item.titleKey)}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -121,9 +123,9 @@ export function AppSidebar() {
       <SidebarFooter className="border-t border-sidebar-border p-2">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton tooltip="Sign Out">
+            <SidebarMenuButton tooltip={t("nav.signout")}>
               <LogOut className="h-4 w-4" />
-              {!collapsed && <span>Sign Out</span>}
+              {!collapsed && <span>{t("nav.signout")}</span>}
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

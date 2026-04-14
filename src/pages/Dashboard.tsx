@@ -1,28 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Handshake, TrendingUp, Phone, Mail, Calendar, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
-
-const kpis = [
-  { title: "New Leads", value: "127", change: "+12%", up: true, icon: Users },
-  { title: "Active Deals", value: "43", change: "+8%", up: true, icon: Handshake },
-  { title: "Conversion Rate", value: "24%", change: "+3%", up: true, icon: TrendingUp },
-  { title: "Revenue Pipeline", value: "$284K", change: "-2%", up: false, icon: TrendingUp },
-];
-
-const pipelineData = [
-  { name: "New", count: 42 },
-  { name: "Contacted", count: 31 },
-  { name: "Qualified", count: 24 },
-  { name: "Negotiation", count: 18 },
-  { name: "Won", count: 12 },
-];
-
-const pieData = [
-  { name: "Calls", value: 45 },
-  { name: "Emails", value: 32 },
-  { name: "Meetings", value: 15 },
-  { name: "Follow-ups", value: 28 },
-];
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const PIE_COLORS = [
   "hsl(217, 91%, 50%)",
@@ -31,22 +10,45 @@ const PIE_COLORS = [
   "hsl(45, 93%, 47%)",
 ];
 
-const upcomingFollowups = [
-  { name: "Sarah Chen", company: "TechCorp", date: "Today, 2:00 PM", type: "Call" },
-  { name: "Mike Ross", company: "FinServe", date: "Today, 4:30 PM", type: "Meeting" },
-  { name: "Lisa Wang", company: "DataFlow", date: "Tomorrow, 10:00 AM", type: "Email" },
-  { name: "James Hart", company: "CloudBase", date: "Tomorrow, 1:00 PM", type: "Follow-up" },
-];
-
 export default function Dashboard() {
+  const { t } = useLanguage();
+
+  const kpis = [
+    { title: t("dashboard.newLeads"), value: "127", change: "+12%", up: true, icon: Users },
+    { title: t("dashboard.activeDeals"), value: "43", change: "+8%", up: true, icon: Handshake },
+    { title: t("dashboard.conversionRate"), value: "24%", change: "+3%", up: true, icon: TrendingUp },
+    { title: t("dashboard.revenuePipeline"), value: "$284K", change: "-2%", up: false, icon: TrendingUp },
+  ];
+
+  const pipelineData = [
+    { name: t("status.new"), count: 42 },
+    { name: t("status.contacted"), count: 31 },
+    { name: t("status.qualified"), count: 24 },
+    { name: t("status.negotiation"), count: 18 },
+    { name: t("status.won"), count: 12 },
+  ];
+
+  const pieData = [
+    { name: t("dashboard.calls"), value: 45 },
+    { name: t("dashboard.emails"), value: 32 },
+    { name: t("dashboard.meetings"), value: 15 },
+    { name: t("dashboard.followUps"), value: 28 },
+  ];
+
+  const upcomingFollowups = [
+    { name: "Sarah Chen", company: "TechCorp", date: "Today, 2:00 PM", type: "Call" },
+    { name: "Mike Ross", company: "FinServe", date: "Today, 4:30 PM", type: "Meeting" },
+    { name: "Lisa Wang", company: "DataFlow", date: "Tomorrow, 10:00 AM", type: "Email" },
+    { name: "James Hart", company: "CloudBase", date: "Tomorrow, 1:00 PM", type: "Follow-up" },
+  ];
+
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-foreground">Dashboard</h1>
-        <p className="text-sm text-muted-foreground">Overview of your sales performance</p>
+        <h1 className="text-2xl font-semibold text-foreground">{t("dashboard.title")}</h1>
+        <p className="text-sm text-muted-foreground">{t("dashboard.subtitle")}</p>
       </div>
 
-      {/* KPI Cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {kpis.map((kpi) => (
           <Card key={kpi.title} className="kpi-card">
@@ -64,7 +66,7 @@ export default function Dashboard() {
                     <span className={`text-xs font-medium ${kpi.up ? "text-success" : "text-destructive"}`}>
                       {kpi.change}
                     </span>
-                    <span className="text-xs text-muted-foreground">vs last month</span>
+                    <span className="text-xs text-muted-foreground">{t("dashboard.vsLastMonth")}</span>
                   </div>
                 </div>
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
@@ -76,11 +78,10 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {/* Charts Row */}
       <div className="grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle className="text-base font-medium">Lead Pipeline</CardTitle>
+            <CardTitle className="text-base font-medium">{t("dashboard.leadPipeline")}</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={280}>
@@ -90,8 +91,8 @@ export default function Dashboard() {
                 <YAxis fontSize={12} tickLine={false} axisLine={false} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "hsl(0, 0%, 100%)",
-                    border: "1px solid hsl(220, 13%, 91%)",
+                    backgroundColor: "hsl(var(--card))",
+                    border: "1px solid hsl(var(--border))",
                     borderRadius: "8px",
                     fontSize: "12px",
                   }}
@@ -104,7 +105,7 @@ export default function Dashboard() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base font-medium">Activity Breakdown</CardTitle>
+            <CardTitle className="text-base font-medium">{t("dashboard.activityBreakdown")}</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={200}>
@@ -141,10 +142,9 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      {/* Follow-ups */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base font-medium">Upcoming Follow-ups</CardTitle>
+          <CardTitle className="text-base font-medium">{t("dashboard.upcomingFollowups")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
