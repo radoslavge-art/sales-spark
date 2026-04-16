@@ -2,15 +2,18 @@ import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Settings2, GripVertical } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Settings2, GripVertical, Plus, X } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-export type ColumnKey = "name" | "company" | "status" | "priority" | "owner" | "source" | "created";
+export type BuiltInColumnKey = "name" | "company" | "status" | "priority" | "owner" | "source" | "created";
 
 export interface ColumnConfig {
-  key: ColumnKey;
+  key: string;
   labelKey: string;
   visible: boolean;
+  isCustom?: boolean;
+  customLabel?: string;
 }
 
 export const DEFAULT_COLUMNS: ColumnConfig[] = [
@@ -33,8 +36,10 @@ export function LeadColumnSettings({ columns, onChange }: Props) {
   const dragItem = useRef<number | null>(null);
   const dragOverItem = useRef<number | null>(null);
   const [dragging, setDragging] = useState(false);
+  const [newColName, setNewColName] = useState("");
+  const [showAddInput, setShowAddInput] = useState(false);
 
-  const toggleVisibility = (key: ColumnKey) => {
+  const toggleVisibility = (key: string) => {
     const visibleCount = columns.filter((c) => c.visible).length;
     onChange(
       columns.map((col) =>
@@ -66,6 +71,21 @@ export function LeadColumnSettings({ columns, onChange }: Props) {
     setDragging(false);
   };
 
+  const addCustomColumn = () => {
+    const name = newColName.trim();
+    if (!name) return;
+    const key = `custom_${Date.now()}`;
+    onChange([...columns, { key, labelKey: key, visible: true, isCustom: true, customLabel: name }]);
+    setNewColName("");
+    setShowAddInput(false);
+  };
+
+  const removeCustomColumn = (key: string) => {
+    onChange(columns.filter((col) => col.key !== key));
+  };
+
+  const getLabel = (col: ColumnConfig) => col.isCustom ? col.customLabel ?? col.key : t(col.labelKey);
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -95,11 +115,45 @@ export function LeadColumnSettings({ columns, onChange }: Props) {
                 onCheckedChange={() => toggleVisibility(col.key)}
                 id={`col-${col.key}`}
               />
-              <label htmlFor={`col-${col.key}`} className="flex-1 cursor-pointer select-none">
-                {t(col.labelKey)}
+              <label htmlFor={`col-${col.key}`} className="flex-1 cursor-pointer select-none truncate">
+                {getLabel(col)}
               </label>
+              {col.isCustom && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); removeCustomColumn(col.key); }}
+                  className="text-muted-foreground hover:text-destructive shrink-0"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              )}
             </div>
           ))}
+        </div>
+
+        <div className="border-t mt-2 pt-2">
+          {showAddInput ? (
+            <div className="flex items-center gap-1">
+              <Input
+                value={newColName}
+                onChange={(e) => setNewColName(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && addCustomColumn()}
+                placeholder={t("leads.customColumnName")}
+                className="h-7 text-xs"
+                autoFocus
+              />
+              <Button size="sm" variant="ghost" className="h-7 px-2 shrink-0" onClick={addCustomColumn}>
+                <Plus className="h-3.5 w-3.5" />
+              </Button>
+              <Button size="sm" variant="ghost" className="h-7 px-2 shrink-0" onClick={() => { setShowAddInput(false); setNewColName(""); }}>
+                <X className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+          ) : (
+            <Button variant="ghost" size="sm" className="w-full justify-start text-xs gap-1.5 h-7" onClick={() => setShowAddInput(true)}>
+              <Plus className="h-3.5 w-3.5" />
+              {t("leads.addCustomColumn")}
+            </Button>
+          )}
         </div>
       </PopoverContent>
     </Popover>
