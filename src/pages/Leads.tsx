@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LeadCreateDialog } from "@/components/leads/LeadCreateDialog";
 import { LeadHistoryPanel } from "@/components/leads/LeadHistoryPanel";
-import { LeadColumnSettings, DEFAULT_COLUMNS, type ColumnConfig, type ColumnKey } from "@/components/leads/LeadColumnSettings";
+import { LeadColumnSettings, DEFAULT_COLUMNS, type ColumnConfig, type BuiltInColumnKey } from "@/components/leads/LeadColumnSettings";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 type Lead = {
@@ -42,6 +42,7 @@ type Lead = {
   assignedTo: string;
   priority: "High" | "Medium" | "Low";
   createdAt: string;
+  customTags?: Record<string, string[]>;
 };
 
 const mockLeads: Lead[] = [
@@ -67,8 +68,20 @@ const priorityKeys: Record<string, string> = {
   Low: "priority.low",
 };
 
-function renderCell(lead: Lead, columnKey: ColumnKey, t: (key: string) => string) {
-  switch (columnKey) {
+function renderCell(lead: Lead, col: ColumnConfig, t: (key: string) => string) {
+  if (col.isCustom) {
+    const tags = lead.customTags?.[col.key] ?? [];
+    return (
+      <div className="flex flex-wrap gap-1">
+        {tags.length > 0 ? tags.map((tag) => (
+          <span key={tag} className="inline-flex items-center rounded-full bg-primary/10 text-primary px-2 py-0.5 text-xs font-medium">
+            {tag}
+          </span>
+        )) : <span className="text-muted-foreground text-xs">—</span>}
+      </div>
+    );
+  }
+  switch (col.key as BuiltInColumnKey) {
     case "name":
       return (
         <div>
@@ -202,7 +215,7 @@ export default function Leads() {
                         dragColIdx === idx ? "opacity-50" : ""
                       } ${dragOverColIdx === idx && dragColIdx !== null && dragColIdx !== idx ? "border-l-2 border-primary" : ""}`}
                     >
-                      {t(col.labelKey)}
+                      {col.isCustom ? col.customLabel : t(col.labelKey)}
                     </TableHead>
                   ))}
                   <TableHead className="w-10" />
@@ -217,7 +230,7 @@ export default function Leads() {
                   >
                     {visibleColumns.map((col) => (
                       <TableCell key={col.key}>
-                        {renderCell(lead, col.key, t)}
+                        {renderCell(lead, col, t)}
                       </TableCell>
                     ))}
                     <TableCell>
