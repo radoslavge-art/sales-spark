@@ -230,7 +230,7 @@ export default function Leads() {
                   >
                     {visibleColumns.map((col) => (
                       <TableCell key={col.key}>
-                        {renderCell(lead, col.key, t)}
+                        {renderCell(lead, col, t)}
                       </TableCell>
                     ))}
                     <TableCell>
