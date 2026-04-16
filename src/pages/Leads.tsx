@@ -215,7 +215,7 @@ export default function Leads() {
                         dragColIdx === idx ? "opacity-50" : ""
                       } ${dragOverColIdx === idx && dragColIdx !== null && dragColIdx !== idx ? "border-l-2 border-primary" : ""}`}
                     >
-                      {t(col.labelKey)}
+                      {col.isCustom ? col.customLabel : t(col.labelKey)}
                     </TableHead>
                   ))}
                   <TableHead className="w-10" />
