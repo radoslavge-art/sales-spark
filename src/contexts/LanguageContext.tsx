@@ -231,6 +231,8 @@ const translations: Record<Language, Record<string, string>> = {
     "leads.createLead": "Създай клиент",
     "leads.contactHistory": "История на контактите",
     "leads.noHistory": "Все още няма записана история.",
+    "leads.columns": "Колони",
+    "leads.dragToReorder": "Плъзнете за пренареждане",
 
     // Statuses
     "status.new": "Нов",
