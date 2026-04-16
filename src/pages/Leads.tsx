@@ -42,6 +42,7 @@ type Lead = {
   assignedTo: string;
   priority: "High" | "Medium" | "Low";
   createdAt: string;
+  customTags?: Record<string, string[]>;
 };
 
 const mockLeads: Lead[] = [
