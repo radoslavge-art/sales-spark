@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LeadCreateDialog } from "@/components/leads/LeadCreateDialog";
 import { LeadHistoryPanel } from "@/components/leads/LeadHistoryPanel";
+import { LeadColumnSettings, DEFAULT_COLUMNS, type ColumnConfig, type ColumnKey } from "@/components/leads/LeadColumnSettings";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 type Lead = {
@@ -60,12 +61,53 @@ const priorityClasses: Record<string, string> = {
   Low: "text-muted-foreground bg-muted",
 };
 
+const priorityKeys: Record<string, string> = {
+  High: "priority.high",
+  Medium: "priority.medium",
+  Low: "priority.low",
+};
+
+function renderCell(lead: Lead, columnKey: ColumnKey, t: (key: string) => string) {
+  switch (columnKey) {
+    case "name":
+      return (
+        <div>
+          <p className="font-medium text-foreground">{lead.firstName} {lead.lastName}</p>
+          <p className="text-xs text-muted-foreground">{lead.email}</p>
+        </div>
+      );
+    case "company":
+      return <span className="text-muted-foreground">{lead.company}</span>;
+    case "status":
+      return <StatusBadge status={lead.status} />;
+    case "priority":
+      return (
+        <span className={`status-badge ${priorityClasses[lead.priority]}`}>
+          {t(priorityKeys[lead.priority])}
+        </span>
+      );
+    case "owner":
+      return <span className="text-muted-foreground">{lead.assignedTo}</span>;
+    case "source":
+      return <span className="text-muted-foreground">{lead.source}</span>;
+    case "created":
+      return <span className="text-muted-foreground text-sm">{lead.createdAt}</span>;
+    default:
+      return null;
+  }
+}
+
 export default function Leads() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [createOpen, setCreateOpen] = useState(false);
   const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
+  const [columns, setColumns] = useState<ColumnConfig[]>(DEFAULT_COLUMNS);
+  const [dragColIdx, setDragColIdx] = useState<number | null>(null);
+  const [dragOverColIdx, setDragOverColIdx] = useState<number | null>(null);
   const { t } = useLanguage();
+
+  const visibleColumns = columns.filter((c) => c.visible);
 
   const filtered = mockLeads.filter((lead) => {
     const matchesSearch =
@@ -80,10 +122,22 @@ export default function Leads() {
     ? mockLeads.find((l) => l.id === selectedLeadId)
     : null;
 
-  const priorityKeys: Record<string, string> = {
-    High: "priority.high",
-    Medium: "priority.medium",
-    Low: "priority.low",
+  const handleHeaderDragStart = (index: number) => setDragColIdx(index);
+  const handleHeaderDragEnter = (index: number) => setDragOverColIdx(index);
+  const handleHeaderDragEnd = () => {
+    if (dragColIdx !== null && dragOverColIdx !== null && dragColIdx !== dragOverColIdx) {
+      // Map visible indices back to full column array
+      const fromKey = visibleColumns[dragColIdx].key;
+      const toKey = visibleColumns[dragOverColIdx].key;
+      const fromFullIdx = columns.findIndex((c) => c.key === fromKey);
+      const toFullIdx = columns.findIndex((c) => c.key === toKey);
+      const reordered = [...columns];
+      const [removed] = reordered.splice(fromFullIdx, 1);
+      reordered.splice(toFullIdx, 0, removed);
+      setColumns(reordered);
+    }
+    setDragColIdx(null);
+    setDragOverColIdx(null);
   };
 
   return (
@@ -93,7 +147,10 @@ export default function Leads() {
           <h1 className="text-2xl font-semibold text-foreground">{t("leads.title")}</h1>
           <p className="text-sm text-muted-foreground">{mockLeads.length} {t("leads.totalLeads")}</p>
         </div>
-        <LeadCreateDialog open={createOpen} onOpenChange={setCreateOpen} />
+        <div className="flex items-center gap-2">
+          <LeadColumnSettings columns={columns} onChange={setColumns} />
+          <LeadCreateDialog open={createOpen} onOpenChange={setCreateOpen} />
+        </div>
       </div>
 
       <Card>
@@ -133,13 +190,21 @@ export default function Leads() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{t("leads.name")}</TableHead>
-                  <TableHead>{t("leads.company")}</TableHead>
-                  <TableHead>{t("leads.status")}</TableHead>
-                  <TableHead>{t("leads.priority")}</TableHead>
-                  <TableHead>{t("leads.owner")}</TableHead>
-                  <TableHead>{t("leads.source")}</TableHead>
-                  <TableHead>{t("leads.created")}</TableHead>
+                  {visibleColumns.map((col, idx) => (
+                    <TableHead
+                      key={col.key}
+                      draggable
+                      onDragStart={() => handleHeaderDragStart(idx)}
+                      onDragEnter={() => handleHeaderDragEnter(idx)}
+                      onDragEnd={handleHeaderDragEnd}
+                      onDragOver={(e) => e.preventDefault()}
+                      className={`cursor-grab active:cursor-grabbing select-none transition-opacity ${
+                        dragColIdx === idx ? "opacity-50" : ""
+                      } ${dragOverColIdx === idx && dragColIdx !== null && dragColIdx !== idx ? "border-l-2 border-primary" : ""}`}
+                    >
+                      {t(col.labelKey)}
+                    </TableHead>
+                  ))}
                   <TableHead className="w-10" />
                 </TableRow>
               </TableHeader>
@@ -150,24 +215,11 @@ export default function Leads() {
                     className={`cursor-pointer hover:bg-secondary/50 ${selectedLeadId === lead.id ? "bg-secondary/70" : ""}`}
                     onClick={() => setSelectedLeadId(selectedLeadId === lead.id ? null : lead.id)}
                   >
-                    <TableCell>
-                      <div>
-                        <p className="font-medium text-foreground">{lead.firstName} {lead.lastName}</p>
-                        <p className="text-xs text-muted-foreground">{lead.email}</p>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">{lead.company}</TableCell>
-                    <TableCell>
-                      <StatusBadge status={lead.status} />
-                    </TableCell>
-                    <TableCell>
-                      <span className={`status-badge ${priorityClasses[lead.priority]}`}>
-                        {t(priorityKeys[lead.priority])}
-                      </span>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">{lead.assignedTo}</TableCell>
-                    <TableCell className="text-muted-foreground">{lead.source}</TableCell>
-                    <TableCell className="text-muted-foreground text-sm">{lead.createdAt}</TableCell>
+                    {visibleColumns.map((col) => (
+                      <TableCell key={col.key}>
+                        {renderCell(lead, col.key, t)}
+                      </TableCell>
+                    ))}
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
