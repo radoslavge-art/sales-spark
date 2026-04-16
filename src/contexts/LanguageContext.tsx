@@ -67,6 +67,8 @@ const translations: Record<Language, Record<string, string>> = {
     "leads.createLead": "Create Lead",
     "leads.contactHistory": "Contact History",
     "leads.noHistory": "No history recorded yet.",
+    "leads.columns": "Columns",
+    "leads.dragToReorder": "Drag to reorder",
 
     // Statuses
     "status.new": "New",
