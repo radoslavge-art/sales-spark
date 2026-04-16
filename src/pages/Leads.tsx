@@ -68,8 +68,20 @@ const priorityKeys: Record<string, string> = {
   Low: "priority.low",
 };
 
-function renderCell(lead: Lead, columnKey: ColumnKey, t: (key: string) => string) {
-  switch (columnKey) {
+function renderCell(lead: Lead, col: ColumnConfig, t: (key: string) => string) {
+  if (col.isCustom) {
+    const tags = lead.customTags?.[col.key] ?? [];
+    return (
+      <div className="flex flex-wrap gap-1">
+        {tags.length > 0 ? tags.map((tag) => (
+          <span key={tag} className="inline-flex items-center rounded-full bg-primary/10 text-primary px-2 py-0.5 text-xs font-medium">
+            {tag}
+          </span>
+        )) : <span className="text-muted-foreground text-xs">—</span>}
+      </div>
+    );
+  }
+  switch (col.key as BuiltInColumnKey) {
     case "name":
       return (
         <div>
