@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LeadCreateDialog } from "@/components/leads/LeadCreateDialog";
 import { LeadHistoryPanel } from "@/components/leads/LeadHistoryPanel";
-import { LeadColumnSettings, DEFAULT_COLUMNS, type ColumnConfig, type ColumnKey } from "@/components/leads/LeadColumnSettings";
+import { LeadColumnSettings, DEFAULT_COLUMNS, type ColumnConfig, type BuiltInColumnKey } from "@/components/leads/LeadColumnSettings";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 type Lead = {
