@@ -1,0 +1,4 @@
+project_id = "vqjqrxcdbmmthpknnxwi"
+
+[functions.extract-tags]
+verify_jwt = false

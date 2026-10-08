@@ -1,0 +1,229 @@
+/* Font loaded via index.html preload + preconnect */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 216 40% 95%;
+    --foreground: 220 20% 14%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 14%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 14%;
+
+    --primary: 217 91% 52%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 14% 92%;
+    --secondary-foreground: 220 20% 14%;
+
+    --muted: 220 14% 94%;
+    --muted-foreground: 220 10% 46%;
+
+    --accent: 217 91% 95%;
+    --accent-foreground: 217 91% 40%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 13% 90%;
+    --input: 220 13% 90%;
+    --ring: 217 91% 52%;
+
+    --radius: 0.5rem;
+
+    /* Stage Colors */
+    --stage-blue: 210 17% 93%;
+    --stage-blue-accent: 217 91% 52%;
+    --stage-green: 142 64% 93%;
+    --stage-green-accent: 142 64% 42%;
+    --stage-yellow: 48 96% 93%;
+    --stage-yellow-accent: 48 96% 46%;
+    --stage-orange: 25 95% 93%;
+    --stage-orange-accent: 25 95% 53%;
+    --stage-red: 0 72% 95%;
+    --stage-red-accent: 0 72% 51%;
+    --stage-pink: 330 60% 95%;
+    --stage-pink-accent: 330 60% 50%;
+    --stage-purple: 270 60% 95%;
+    --stage-purple-accent: 270 60% 55%;
+    --stage-indigo: 235 70% 94%;
+    --stage-indigo-accent: 235 70% 55%;
+    --stage-teal: 180 50% 93%;
+    --stage-teal-accent: 180 50% 40%;
+    --stage-amber: 38 92% 95%;
+    --stage-amber-accent: 38 92% 50%;
+    --stage-gray: 220 10% 93%;
+    --stage-gray-accent: 220 10% 46%;
+    --stage-slate: 215 16% 93%;
+    --stage-slate-accent: 215 16% 47%;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 220 20% 14%;
+    --sidebar-primary: 217 91% 52%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 217 91% 95%;
+    --sidebar-accent-foreground: 217 91% 40%;
+    --sidebar-border: 220 13% 90%;
+    --sidebar-ring: 217 91% 52%;
+  }
+
+  .dark {
+    --background: 222 14% 12%;
+    --foreground: 210 20% 92%;
+
+    --card: 222 14% 16%;
+    --card-foreground: 210 20% 92%;
+
+    --popover: 222 14% 16%;
+    --popover-foreground: 210 20% 92%;
+
+    --primary: 217 91% 56%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 222 14% 22%;
+    --secondary-foreground: 210 20% 88%;
+
+    --muted: 222 14% 20%;
+    --muted-foreground: 220 10% 58%;
+
+    --accent: 217 50% 22%;
+    --accent-foreground: 217 91% 72%;
+
+    --destructive: 0 72% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 222 14% 24%;
+    --input: 222 14% 24%;
+    --ring: 217 91% 56%;
+
+    --stage-blue: 210 20% 20%;
+    --stage-blue-accent: 217 91% 60%;
+    --stage-green: 142 30% 18%;
+    --stage-green-accent: 142 64% 50%;
+    --stage-yellow: 48 40% 18%;
+    --stage-yellow-accent: 48 96% 55%;
+    --stage-orange: 25 40% 18%;
+    --stage-orange-accent: 25 95% 60%;
+    --stage-red: 0 30% 18%;
+    --stage-red-accent: 0 72% 58%;
+    --stage-pink: 330 30% 18%;
+    --stage-pink-accent: 330 60% 58%;
+    --stage-purple: 270 30% 20%;
+    --stage-purple-accent: 270 60% 65%;
+    --stage-indigo: 235 30% 20%;
+    --stage-indigo-accent: 235 70% 65%;
+    --stage-teal: 180 25% 18%;
+    --stage-teal-accent: 180 50% 50%;
+    --stage-amber: 38 40% 18%;
+    --stage-amber-accent: 38 92% 55%;
+    --stage-gray: 220 10% 20%;
+    --stage-gray-accent: 220 10% 55%;
+    --stage-slate: 215 16% 20%;
+    --stage-slate-accent: 215 16% 55%;
+
+    --sidebar-background: 222 14% 14%;
+    --sidebar-foreground: 210 20% 92%;
+    --sidebar-primary: 217 91% 56%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 217 50% 22%;
+    --sidebar-accent-foreground: 217 91% 72%;
+    --sidebar-border: 222 14% 24%;
+    --sidebar-ring: 217 91% 56%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
+
+.no-transitions,
+.no-transitions *,
+.no-transitions *::before,
+.no-transitions *::after {
+  transition-duration: 0s !important;
+  animation-duration: 0s !important;
+}
+
+/* Weekly Report row hover — subtle overlay that preserves status colors */
+tr.wr-data-row {
+  position: relative;
+}
+tr.wr-data-row:hover > td {
+  filter: brightness(0.97);
+}
+
+/* Weekly Report row status colors - left border only + very light tint */
+.wr-row-accepted > td:first-child {
+  border-left: 4px solid hsl(142 71% 40%) !important;
+}
+.wr-row-accepted > td {
+  background-color: hsl(142 60% 85%) !important;
+}
+.wr-row-paused > td:first-child {
+  border-left: 4px solid hsl(45 93% 42%) !important;
+}
+.wr-row-paused > td {
+  background-color: hsl(48 80% 85%) !important;
+}
+.wr-row-closed > td:first-child {
+  border-left: 4px solid hsl(220 9% 50%) !important;
+}
+.wr-row-closed > td {
+  background-color: hsl(220 14% 88%) !important;
+}
+
+.dark .wr-row-accepted > td:first-child { border-left: 4px solid hsl(142 40% 40%) !important; }
+.dark .wr-row-accepted > td { background-color: hsl(142 30% 18%) !important; }
+.dark .wr-row-paused > td:first-child { border-left: 4px solid hsl(45 50% 45%) !important; }
+.dark .wr-row-paused > td { background-color: hsl(45 30% 18%) !important; }
+.dark .wr-row-closed > td:first-child { border-left: 4px solid hsl(var(--muted-foreground) / 0.3) !important; }
+.dark .wr-row-closed > td { background-color: hsl(var(--muted) / 0.4) !important; }
+
+/* Weekly Report group header */
+.wr-group-header > td {
+  background-color: hsl(var(--secondary)) !important;
+}
+
+/* Styled scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border)) transparent;
+}
+
+/* Drag & drop placeholder insertion line */
+[data-rfd-placeholder-context-id] > div {
+  background: hsl(var(--primary) / 0.15) !important;
+  border: 2px dashed hsl(var(--primary) / 0.4) !important;
+  border-radius: 8px !important;
+  min-height: 4px !important;
+  margin-bottom: 14px;
+  transition: all 0.15s ease;
+}

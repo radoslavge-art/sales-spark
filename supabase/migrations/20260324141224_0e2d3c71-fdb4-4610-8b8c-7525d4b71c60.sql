@@ -1,0 +1,1 @@
+ALTER TABLE public.weekly_reports DROP CONSTRAINT IF EXISTS weekly_reports_week_start_date_created_by_key;

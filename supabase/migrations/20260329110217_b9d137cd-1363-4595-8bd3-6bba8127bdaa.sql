@@ -1,0 +1,1 @@
+ALTER TABLE candidate_attachments ADD COLUMN cv_text text DEFAULT '';

@@ -1,0 +1,1 @@
+ALTER TABLE public.candidates ADD COLUMN ai_summary text NOT NULL DEFAULT '';

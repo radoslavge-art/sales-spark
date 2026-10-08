@@ -1,0 +1,1 @@
+ALTER TABLE public.candidates ADD COLUMN notice_period text NOT NULL DEFAULT '';

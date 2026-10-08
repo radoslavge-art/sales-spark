@@ -1,0 +1,1 @@
+ALTER TABLE public.weekly_report_rows ADD COLUMN row_status text DEFAULT NULL;

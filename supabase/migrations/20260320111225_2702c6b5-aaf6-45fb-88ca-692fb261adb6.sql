@@ -1,0 +1,1 @@
+ALTER TABLE public.weekly_reports ADD COLUMN recruiter text NOT NULL DEFAULT '';

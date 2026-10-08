@@ -1,0 +1,1 @@
+ALTER TABLE public.candidates ADD COLUMN tags text[] NOT NULL DEFAULT '{}';
