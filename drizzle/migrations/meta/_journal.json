@@ -1,5 +1,20 @@
 {
   "version": "7",
   "dialect": "postgresql",
-  "entries": []
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1791795753452,
+      "tag": "0000_ats_core_part1",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791795846861,
+      "tag": "0001_ats_core_part2",
+      "breakpoints": true
+    }
+  ]
 }
