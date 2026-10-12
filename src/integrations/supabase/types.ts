@@ -41,27 +41,80 @@ export type Database = {
         }
         Relationships: []
       }
-      board_columns: {
+      board_activities: {
         Row: {
+          action: string
           board_id: string
           created_at: string
           id: string
-          label: string
-          sort_order: number
+          user_id: string
         }
         Insert: {
+          action: string
           board_id: string
           created_at?: string
           id?: string
-          label: string
-          sort_order?: number
+          user_id: string
         }
         Update: {
+          action?: string
           board_id?: string
           created_at?: string
           id?: string
-          label?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "board_activities_board_id_fkey"
+            columns: ["board_id"]
+            isOneToOne: false
+            referencedRelation: "boards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      board_columns: {
+        Row: {
+          board_id: string
+          color: string
+          column_type: string | null
+          created_at: string
+          deleted_at: string | null
+          deleted_by: string | null
+          id: string
+          label: string
+          max_cards: number | null
+          sort_order: number
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          board_id: string
+          color?: string
+          column_type?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          id?: string
+          label: string
+          max_cards?: number | null
           sort_order?: number
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          board_id?: string
+          color?: string
+          column_type?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          id?: string
+          label?: string
+          max_cards?: number | null
+          sort_order?: number
+          updated_at?: string | null
+          updated_by?: string | null
         }
         Relationships: [
           {
@@ -79,6 +132,8 @@ export type Database = {
           created_at: string
           id: string
           role: string
+          updated_at: string | null
+          updated_by: string | null
           user_id: string
         }
         Insert: {
@@ -86,6 +141,8 @@ export type Database = {
           created_at?: string
           id?: string
           role?: string
+          updated_at?: string | null
+          updated_by?: string | null
           user_id: string
         }
         Update: {
@@ -93,6 +150,8 @@ export type Database = {
           created_at?: string
           id?: string
           role?: string
+          updated_at?: string | null
+          updated_by?: string | null
           user_id?: string
         }
         Relationships: [
@@ -107,34 +166,55 @@ export type Database = {
       }
       board_tasks: {
         Row: {
+          assigned_to: string
           board_id: string
           candidate_id: string | null
           column_id: string | null
           created_at: string
+          deleted_at: string | null
+          deleted_by: string | null
+          due_date: string | null
           id: string
           notes: string
+          priority: string
           sort_order: number
           title: string
+          updated_at: string | null
+          updated_by: string | null
         }
         Insert: {
+          assigned_to?: string
           board_id: string
           candidate_id?: string | null
           column_id?: string | null
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          due_date?: string | null
           id?: string
           notes?: string
+          priority?: string
           sort_order?: number
           title: string
+          updated_at?: string | null
+          updated_by?: string | null
         }
         Update: {
+          assigned_to?: string
           board_id?: string
           candidate_id?: string | null
           column_id?: string | null
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          due_date?: string | null
           id?: string
           notes?: string
+          priority?: string
           sort_order?: number
           title?: string
+          updated_at?: string | null
+          updated_by?: string | null
         }
         Relationships: [
           {
@@ -163,31 +243,137 @@ export type Database = {
       boards: {
         Row: {
           created_at: string
+          deleted_at: string | null
+          deleted_by: string | null
           id: string
           is_shared: boolean
           name: string
           owner_id: string
+          updated_at: string | null
+          updated_by: string | null
         }
         Insert: {
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
           id?: string
           is_shared?: boolean
           name: string
           owner_id: string
+          updated_at?: string | null
+          updated_by?: string | null
         }
         Update: {
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
           id?: string
           is_shared?: boolean
           name?: string
           owner_id?: string
+          updated_at?: string | null
+          updated_by?: string | null
         }
         Relationships: []
+      }
+      candidate_attachments: {
+        Row: {
+          candidate_id: string
+          created_at: string
+          deleted_at: string | null
+          deleted_by: string | null
+          file_name: string
+          file_path: string
+          file_size: number
+          id: string
+          mime_type: string
+          user_id: string
+        }
+        Insert: {
+          candidate_id: string
+          created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          file_name: string
+          file_path: string
+          file_size?: number
+          id?: string
+          mime_type?: string
+          user_id: string
+        }
+        Update: {
+          candidate_id?: string
+          created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          file_name?: string
+          file_path?: string
+          file_size?: number
+          id?: string
+          mime_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "candidate_attachments_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "candidates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      candidate_comments: {
+        Row: {
+          candidate_id: string
+          content: string
+          created_at: string
+          deleted_at: string | null
+          deleted_by: string | null
+          id: string
+          updated_at: string | null
+          updated_by: string | null
+          user_id: string
+        }
+        Insert: {
+          candidate_id: string
+          content?: string
+          created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          id?: string
+          updated_at?: string | null
+          updated_by?: string | null
+          user_id: string
+        }
+        Update: {
+          candidate_id?: string
+          content?: string
+          created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          id?: string
+          updated_at?: string | null
+          updated_by?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "candidate_comments_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "candidates"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       candidates: {
         Row: {
           ai_summary: string
           created_at: string
+          created_by: string | null
+          deleted_at: string | null
+          deleted_by: string | null
           expected_salary: string
           id: string
           name: string
@@ -195,12 +381,18 @@ export type Database = {
           notice_period: string
           owner_id: string | null
           position_id: string
+          rejected_at: string | null
           stage_id: string | null
           tags: string[]
+          updated_at: string | null
+          updated_by: string | null
         }
         Insert: {
           ai_summary?: string
           created_at?: string
+          created_by?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           expected_salary?: string
           id?: string
           name: string
@@ -208,12 +400,18 @@ export type Database = {
           notice_period?: string
           owner_id?: string | null
           position_id: string
+          rejected_at?: string | null
           stage_id?: string | null
           tags?: string[]
+          updated_at?: string | null
+          updated_by?: string | null
         }
         Update: {
           ai_summary?: string
           created_at?: string
+          created_by?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           expected_salary?: string
           id?: string
           name?: string
@@ -221,8 +419,11 @@ export type Database = {
           notice_period?: string
           owner_id?: string | null
           position_id?: string
+          rejected_at?: string | null
           stage_id?: string | null
           tags?: string[]
+          updated_at?: string | null
+          updated_by?: string | null
         }
         Relationships: [
           {
@@ -251,95 +452,164 @@ export type Database = {
       companies: {
         Row: {
           created_at: string
+          created_by: string | null
+          deleted_at: string | null
+          deleted_by: string | null
           id: string
           name: string
           notes: string
+          updated_at: string | null
+          updated_by: string | null
         }
         Insert: {
           created_at?: string
+          created_by?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           id?: string
           name: string
           notes?: string
+          updated_at?: string | null
+          updated_by?: string | null
         }
         Update: {
           created_at?: string
+          created_by?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           id?: string
           name?: string
           notes?: string
+          updated_at?: string | null
+          updated_by?: string | null
         }
         Relationships: []
       }
       owners: {
         Row: {
           created_at: string
+          deleted_at: string | null
+          deleted_by: string | null
           id: string
           name: string
+          updated_at: string | null
+          updated_by: string | null
         }
         Insert: {
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
           id?: string
           name: string
+          updated_at?: string | null
+          updated_by?: string | null
         }
         Update: {
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
           id?: string
           name?: string
+          updated_at?: string | null
+          updated_by?: string | null
         }
         Relationships: []
       }
       personal_columns: {
         Row: {
+          color: string
+          column_type: string | null
           created_at: string
+          deleted_at: string | null
+          deleted_by: string | null
           id: string
           label: string
+          max_cards: number | null
           sort_order: number
+          updated_at: string | null
+          updated_by: string | null
           user_id: string
         }
         Insert: {
+          color?: string
+          column_type?: string | null
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
           id?: string
           label: string
+          max_cards?: number | null
           sort_order?: number
+          updated_at?: string | null
+          updated_by?: string | null
           user_id: string
         }
         Update: {
+          color?: string
+          column_type?: string | null
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
           id?: string
           label?: string
+          max_cards?: number | null
           sort_order?: number
+          updated_at?: string | null
+          updated_by?: string | null
           user_id?: string
         }
         Relationships: []
       }
       personal_tasks: {
         Row: {
+          assigned_to: string
           candidate_id: string | null
           column_id: string | null
           created_at: string
+          deleted_at: string | null
+          deleted_by: string | null
+          due_date: string | null
           id: string
           notes: string
+          priority: string
           sort_order: number
           title: string
+          updated_at: string | null
+          updated_by: string | null
           user_id: string
         }
         Insert: {
+          assigned_to?: string
           candidate_id?: string | null
           column_id?: string | null
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          due_date?: string | null
           id?: string
           notes?: string
+          priority?: string
           sort_order?: number
           title: string
+          updated_at?: string | null
+          updated_by?: string | null
           user_id: string
         }
         Update: {
+          assigned_to?: string
           candidate_id?: string | null
           column_id?: string | null
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          due_date?: string | null
           id?: string
           notes?: string
+          priority?: string
           sort_order?: number
           title?: string
+          updated_at?: string | null
+          updated_by?: string | null
           user_id?: string
         }
         Relationships: [
@@ -363,23 +633,35 @@ export type Database = {
         Row: {
           company_id: string
           created_at: string
+          deleted_at: string | null
+          deleted_by: string | null
           id: string
           notes: string
           title: string
+          updated_at: string | null
+          updated_by: string | null
         }
         Insert: {
           company_id: string
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
           id?: string
           notes?: string
           title: string
+          updated_at?: string | null
+          updated_by?: string | null
         }
         Update: {
           company_id?: string
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
           id?: string
           notes?: string
           title?: string
+          updated_at?: string | null
+          updated_by?: string | null
         }
         Relationships: [
           {
@@ -394,18 +676,27 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string
+          email: string
           id: string
           name: string
+          updated_at: string | null
+          updated_by: string | null
         }
         Insert: {
           created_at?: string
+          email?: string
           id: string
           name?: string
+          updated_at?: string | null
+          updated_by?: string | null
         }
         Update: {
           created_at?: string
+          email?: string
           id?: string
           name?: string
+          updated_at?: string | null
+          updated_by?: string | null
         }
         Relationships: []
       }
@@ -414,25 +705,37 @@ export type Database = {
           color: string
           company_id: string
           created_at: string
+          deleted_at: string | null
+          deleted_by: string | null
           id: string
           label: string
           sort_order: number
+          updated_at: string | null
+          updated_by: string | null
         }
         Insert: {
           color?: string
           company_id: string
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
           id?: string
           label: string
           sort_order?: number
+          updated_at?: string | null
+          updated_by?: string | null
         }
         Update: {
           color?: string
           company_id?: string
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
           id?: string
           label?: string
           sort_order?: number
+          updated_at?: string | null
+          updated_by?: string | null
         }
         Relationships: [
           {
@@ -444,11 +747,153 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      weekly_report_rows: {
+        Row: {
+          accepted: number
+          company_name: string
+          created_at: string
+          fb_applicants: number
+          hires: number
+          id: string
+          interviews: number
+          job_post: number
+          linkedin: number
+          notes: string
+          offers: number
+          phone_screens: number
+          position_name: string
+          recruiter: string
+          rejections: number
+          report_id: string
+          row_status: string | null
+          sent_to_client: number
+          sort_order: number
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          accepted?: number
+          company_name?: string
+          created_at?: string
+          fb_applicants?: number
+          hires?: number
+          id?: string
+          interviews?: number
+          job_post?: number
+          linkedin?: number
+          notes?: string
+          offers?: number
+          phone_screens?: number
+          position_name?: string
+          recruiter?: string
+          rejections?: number
+          report_id: string
+          row_status?: string | null
+          sent_to_client?: number
+          sort_order?: number
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          accepted?: number
+          company_name?: string
+          created_at?: string
+          fb_applicants?: number
+          hires?: number
+          id?: string
+          interviews?: number
+          job_post?: number
+          linkedin?: number
+          notes?: string
+          offers?: number
+          phone_screens?: number
+          position_name?: string
+          recruiter?: string
+          rejections?: number
+          report_id?: string
+          row_status?: string | null
+          sent_to_client?: number
+          sort_order?: number
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "weekly_report_rows_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "weekly_reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      weekly_reports: {
+        Row: {
+          created_at: string
+          created_by: string
+          id: string
+          sort_order: number
+          updated_at: string | null
+          updated_by: string | null
+          week_end_date: string
+          week_start_date: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          id?: string
+          sort_order?: number
+          updated_at?: string | null
+          updated_by?: string | null
+          week_end_date: string
+          week_start_date: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          id?: string
+          sort_order?: number
+          updated_at?: string | null
+          updated_by?: string | null
+          week_end_date?: string
+          week_start_date?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      get_board_role: {
+        Args: { _board_id: string; _user_id: string }
+        Returns: string
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       is_board_member: {
         Args: { _board_id: string; _user_id: string }
         Returns: boolean
@@ -463,7 +908,7 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -590,6 +1035,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
