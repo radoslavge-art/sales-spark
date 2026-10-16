@@ -45,26 +45,26 @@ CREATE INDEX IF NOT EXISTS crm_leads_status_idx ON public.crm_leads(status);
 CREATE INDEX IF NOT EXISTS crm_deals_owner_idx ON public.crm_deals(owner_id);
 CREATE INDEX IF NOT EXISTS crm_activities_due_idx ON public.crm_activities(due_date) WHERE NOT completed;
 
-CREATE OR REPLACE FUNCTION public.crm_is_manager_or_admin()
+CREATE OR REPLACE FUNCTION public.crm_is_sales_or_admin()
 RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $$
-  SELECT EXISTS (SELECT 1 FROM public.user_roles WHERE user_id = auth.uid() AND role IN ('admin', 'manager'));
+  SELECT EXISTS (SELECT 1 FROM public.user_roles WHERE user_id = auth.uid() AND role IN ('admin', 'sales'));
 $$;
 
 ALTER TABLE public.crm_leads ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.crm_deals ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.crm_activities ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "CRM leads visible to owners and managers" ON public.crm_leads FOR SELECT TO authenticated USING (owner_id = auth.uid() OR created_by = auth.uid() OR public.crm_is_manager_or_admin());
-CREATE POLICY "CRM leads created by sales users" ON public.crm_leads FOR INSERT TO authenticated WITH CHECK (created_by = auth.uid() AND (owner_id = auth.uid() OR public.crm_is_manager_or_admin()));
-CREATE POLICY "CRM leads updated by owners and managers" ON public.crm_leads FOR UPDATE TO authenticated USING (owner_id = auth.uid() OR created_by = auth.uid() OR public.crm_is_manager_or_admin()) WITH CHECK (owner_id = auth.uid() OR public.crm_is_manager_or_admin());
-CREATE POLICY "CRM leads deleted by managers" ON public.crm_leads FOR DELETE TO authenticated USING (public.crm_is_manager_or_admin());
+CREATE POLICY "CRM leads visible to owners and sales" ON public.crm_leads FOR SELECT TO authenticated USING (owner_id = auth.uid() OR created_by = auth.uid() OR public.crm_is_sales_or_admin());
+CREATE POLICY "CRM leads created by sales users" ON public.crm_leads FOR INSERT TO authenticated WITH CHECK (created_by = auth.uid() AND (owner_id = auth.uid() OR public.crm_is_sales_or_admin()));
+CREATE POLICY "CRM leads updated by owners and sales" ON public.crm_leads FOR UPDATE TO authenticated USING (owner_id = auth.uid() OR created_by = auth.uid() OR public.crm_is_sales_or_admin()) WITH CHECK (owner_id = auth.uid() OR public.crm_is_sales_or_admin());
+CREATE POLICY "CRM leads deleted by sales" ON public.crm_leads FOR DELETE TO authenticated USING (public.crm_is_sales_or_admin());
 
-CREATE POLICY "CRM deals visible to owners and managers" ON public.crm_deals FOR SELECT TO authenticated USING (owner_id = auth.uid() OR created_by = auth.uid() OR public.crm_is_manager_or_admin());
-CREATE POLICY "CRM deals created by sales users" ON public.crm_deals FOR INSERT TO authenticated WITH CHECK (created_by = auth.uid() AND (owner_id = auth.uid() OR public.crm_is_manager_or_admin()));
-CREATE POLICY "CRM deals updated by owners and managers" ON public.crm_deals FOR UPDATE TO authenticated USING (owner_id = auth.uid() OR created_by = auth.uid() OR public.crm_is_manager_or_admin()) WITH CHECK (owner_id = auth.uid() OR public.crm_is_manager_or_admin());
-CREATE POLICY "CRM deals deleted by managers" ON public.crm_deals FOR DELETE TO authenticated USING (public.crm_is_manager_or_admin());
+CREATE POLICY "CRM deals visible to owners and sales" ON public.crm_deals FOR SELECT TO authenticated USING (owner_id = auth.uid() OR created_by = auth.uid() OR public.crm_is_sales_or_admin());
+CREATE POLICY "CRM deals created by sales users" ON public.crm_deals FOR INSERT TO authenticated WITH CHECK (created_by = auth.uid() AND (owner_id = auth.uid() OR public.crm_is_sales_or_admin()));
+CREATE POLICY "CRM deals updated by owners and sales" ON public.crm_deals FOR UPDATE TO authenticated USING (owner_id = auth.uid() OR created_by = auth.uid() OR public.crm_is_sales_or_admin()) WITH CHECK (owner_id = auth.uid() OR public.crm_is_sales_or_admin());
+CREATE POLICY "CRM deals deleted by sales" ON public.crm_deals FOR DELETE TO authenticated USING (public.crm_is_sales_or_admin());
 
-CREATE POLICY "CRM activities visible to their users or managers" ON public.crm_activities FOR SELECT TO authenticated USING (user_id = auth.uid() OR public.crm_is_manager_or_admin());
+CREATE POLICY "CRM activities visible to their users or sales" ON public.crm_activities FOR SELECT TO authenticated USING (user_id = auth.uid() OR public.crm_is_sales_or_admin());
 CREATE POLICY "CRM activities created by their users" ON public.crm_activities FOR INSERT TO authenticated WITH CHECK (user_id = auth.uid());
-CREATE POLICY "CRM activities updated by their users or managers" ON public.crm_activities FOR UPDATE TO authenticated USING (user_id = auth.uid() OR public.crm_is_manager_or_admin()) WITH CHECK (user_id = auth.uid() OR public.crm_is_manager_or_admin());
-CREATE POLICY "CRM activities deleted by their users or managers" ON public.crm_activities FOR DELETE TO authenticated USING (user_id = auth.uid() OR public.crm_is_manager_or_admin());
+CREATE POLICY "CRM activities updated by their users or sales" ON public.crm_activities FOR UPDATE TO authenticated USING (user_id = auth.uid() OR public.crm_is_sales_or_admin()) WITH CHECK (user_id = auth.uid() OR public.crm_is_sales_or_admin());
+CREATE POLICY "CRM activities deleted by their users or sales" ON public.crm_activities FOR DELETE TO authenticated USING (public.crm_is_sales_or_admin());

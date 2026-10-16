@@ -120,9 +120,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       .then(({ data }: any) => {
         const roles = (data || []).map((r: any) => r.role);
         setIsAdmin(roles.includes('admin'));
-        // CRM managers share the sales workspace while retaining their broader
-        // database permissions through the CRM row-level-security policies.
-        setIsSales(roles.includes('sales') || roles.includes('manager'));
+        setIsSales(roles.includes('sales'));
       });
   }, [session?.user?.id]);
 
